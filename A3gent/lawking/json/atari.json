@@ -1,0 +1,89 @@
+{
+    "agent": {
+        "type": "dqn_agent",
+        "batch_size": 32,
+        "memory": {
+            "type": "replay",
+            "capacity": 50000
+        },
+        "huber_loss": null,
+        "double_q_model": true,
+        "dueling_model": true,
+        "optimizer": {
+            "type": "clipped_step",
+            "optimizer": {
+                "type": "adam",
+                "learning_rate": 1e-5
+            },
+            "clipping_value": 1.0
+        },
+        "discount": 0.99,
+        "target_sync_frequency": 10000,
+        "first_update": 50000,
+        "batching_capacity": 1,
+        "explorations_spec": {
+            "type": "epsilon_anneal",
+            "initial_epsilon": 1.0,
+            "final_epsilon": 0.01,
+            "timesteps": 1000000
+        },
+        "states_preprocessing_spec": [
+            {
+                "type": "divide",
+                "scale": 255
+            }
+        ],
+        "reward_preprocessing_spec": [
+            {
+                "type": "clip",
+                "min_value": -1.0,
+                "max_value": 1.0
+            }
+        ],
+        "network_spec":[
+            {
+                "type": "conv2d",
+                "size": 32,
+                "window": 8,
+                "stride": 4,
+                "activation": "relu"
+            },
+            {
+                "type": "conv2d",
+                "size": 64,
+                "window": 4,
+                "stride": 2,
+                "activation": "relu"
+            },
+            {
+                "type": "conv2d",
+                "size": 64,
+                "window": 3,
+                "stride": 1,
+                "activation": "relu"
+            },
+            {
+                "type": "flatten"
+            },
+            {
+                "type": "dense",
+                "size": 512,
+                "activation": "relu"
+            }
+        ]
+    },
+    "env": {
+        "mode":"gym",
+        "gym_id":"Sonic#SonicTheHedgehog-Genesis#LabyrinthZone.Act1",
+        "interactive": true,
+        "clip_rewards": false,
+        "episode_life": false
+    },
+    "runner": {
+        "timesteps": 50000000,
+        "episodes": 10000000,
+        "max_episode_timesteps": 4500,
+        "debug": false,
+        "log_interval": 1
+    }
+}
